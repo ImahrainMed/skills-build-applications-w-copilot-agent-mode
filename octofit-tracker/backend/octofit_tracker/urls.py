@@ -26,7 +26,11 @@ router = routers.DefaultRouter()
 
 def api_root(request):
     codespace_name = os.environ.get('CODESPACE_NAME', '')
-    base_url = f"https://{codespace_name}-8000.app.github.dev" if codespace_name else request.build_absolute_uri('/')[:-1]
+    if codespace_name:
+        base_url = f"https://{codespace_name}-8000.app.github.dev"
+    else:
+        # fallback to localhost for local dev
+        base_url = request.build_absolute_uri('/')[:-1]
     return JsonResponse({
         'activities': f"{base_url}/api/activities/",
         'users': f"{base_url}/api/users/",
